@@ -78,7 +78,7 @@ function drawChart(data, device) {
         console.error("locationData.length != rows.length");
     }else {
         dataTable.addRows(rows);
-        chart.draw(dataTable);
+        chart.draw(dataTable, {chartArea: {width: '100%', height:'100%'}});
         google.visualization.events.addListener(chart, 'select', function selectHandler() {
             drawMap(locationData, chart.getSelection()[0]["row"], device);
         });
@@ -97,6 +97,11 @@ function showSummary(username, date, device) {
             console.log(data);
             $("#walking-distance").html((data.body["walking_distance_in_km"]*0.621371192).toFixed(2) + " miles");
             $("#walking-time").html(moment.duration(data.body["active_time_in_seconds"], 'seconds').humanize());
+            $("#max-gait").html(data.body["max_gait_speed_in_meter_per_second"].toFixed(2) + " m/sec");
+            $("#geodiameter").html((data.body["geodiameter_in_km"]*0.621371192).toFixed(2) + " miles");
+
+
+
         },
         error: function(data){
             $("#walking-distance, #walking-time").html("No data");
@@ -140,7 +145,9 @@ function drawMap(dat, row, device) {
     }
     var rows = google.visualization.arrayToDataTable(locations);
 
-    var options = { showTip: true };
+    var options = {
+        chartArea: {width: '100%', height:'100%'},
+        showTip: true };
 
     var map = new google.visualization.Map(document.getElementById('map'));
 
